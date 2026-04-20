@@ -1,5 +1,5 @@
 import { Settings, UserStats } from '../types';
-import { Monitor, Moon, Sun, Type, Code2, Save, Trash2, RefreshCcw, User } from 'lucide-react';
+import { Monitor, Moon, Sun, Type, Code2, Save, Trash2, RefreshCcw, User, LogOut } from 'lucide-react';
 
 interface SettingsViewProps {
   settings: Settings;
@@ -9,6 +9,7 @@ interface SettingsViewProps {
   onClearHistory: () => void;
   onResetStats: () => void;
   onResetAll: () => void;
+  onLogout: () => void;
 }
 
 export default function SettingsView({
@@ -19,6 +20,7 @@ export default function SettingsView({
   onClearHistory,
   onResetStats,
   onResetAll,
+  onLogout,
 }: SettingsViewProps) {
   
   const updateSetting = <K extends keyof Settings>(key: K, value: Settings[K]) => {
@@ -57,6 +59,19 @@ export default function SettingsView({
               />
             </div>
             
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-6">
+              <div>
+                <h3 className="font-headline font-medium text-on-surface">Date of Birth</h3>
+                <p className="font-body text-sm text-on-surface-variant">Update your date of birth.</p>
+              </div>
+              <input
+                type="date"
+                value={userStats.dateOfBirth || ''}
+                onChange={(e) => onUserStatsChange({ ...userStats, dateOfBirth: e.target.value })}
+                className="bg-surface-container border border-outline-variant/20 text-on-surface font-label text-sm rounded-lg px-4 py-2 outline-none focus:border-primary transition-colors min-w-[200px] [&::-webkit-calendar-picker-indicator]:opacity-50 [&::-webkit-calendar-picker-indicator]:invert-[var(--is-dark)]"
+              />
+            </div>
+
           </div>
         </section>
 
@@ -212,6 +227,22 @@ export default function SettingsView({
               <RefreshCcw size={16} /> Reset All Data to Default
             </button>
 
+          </div>
+        </section>
+
+        {/* Account Section */}
+        <section>
+          <h2 className="text-lg font-headline font-semibold text-on-surface mb-4 border-b border-outline-variant/20 pb-4">
+            Account
+          </h2>
+          <div className="flex justify-center pt-2">
+            <button
+              onClick={onLogout}
+              className="w-full sm:w-auto min-w-[240px] flex items-center justify-center gap-2 py-3 px-6 bg-error/10 text-error border border-error/20 rounded-xl font-label font-bold hover:bg-error hover:text-on-error hover:-translate-y-0.5 active:translate-y-0 transition-all shadow-sm"
+            >
+              <LogOut size={18} />
+              Logout
+            </button>
           </div>
         </section>
 

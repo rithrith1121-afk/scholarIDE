@@ -48,7 +48,13 @@
   --font-mono: 'JetBrains Mono', monospace;
 }
 
+:root {
+  --is-dark: 1;
+}
+
 :root.light {
+  --is-dark: 0;
+  
   --color-surface: #f8fafc;
   --color-surface-dim: #f1f5f9;
   --color-surface-bright: #ffffff;

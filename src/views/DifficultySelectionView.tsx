@@ -1,4 +1,4 @@
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Cpu, Zap, Flame } from 'lucide-react';
 import { UserStats } from '../types';
 
 interface DifficultySelectionViewProps {
@@ -15,9 +15,6 @@ export default function DifficultySelectionView({ onSelect, userStats }: Difficu
         </div>
         
         <div className="animate-[fade-in-up_0.4s_ease-out_forwards]">
-          <h2 className="text-xl md:text-2xl tracking-tight font-semibold text-transparent bg-clip-text bg-gradient-to-br from-primary/80 to-primary-container/80 font-label mb-2">
-            Hi, {userStats.name || 'Guest'}
-          </h2>
           <h1 className="text-4xl md:text-5xl font-headline font-bold text-on-surface">
             Generate a Problem
           </h1>

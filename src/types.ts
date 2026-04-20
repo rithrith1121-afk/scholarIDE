@@ -44,15 +44,19 @@ export const defaultSettings: Settings = {
 
 export interface UserStats {
   name: string;
+  dateOfBirth: string | null;
   completed: number;
   streak: number;
   lastSolvedDate: string | null;
+  hasCompletedOnboarding: boolean;
 }
 
 export const defaultUserStats: UserStats = {
   name: '',
+  dateOfBirth: null,
   completed: 0,
   streak: 0,
   lastSolvedDate: null,
+  hasCompletedOnboarding: false,
 };
 

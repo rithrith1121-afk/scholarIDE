@@ -10,6 +10,8 @@ import DifficultySelectionView from './views/DifficultySelectionView';
 import HistoryView from './views/HistoryView';
 import HelpView from './views/HelpView';
 import SettingsView from './views/SettingsView';
+import OnboardingView from './views/OnboardingView';
+import { ToastContainer, ToastType } from './components/Toast';
 import { generateProblem, generateHelp } from './services/geminiService';
 import { Problem, HistoryItem, Settings, defaultSettings, UserStats, defaultUserStats } from './types';
 import { Loader2 } from 'lucide-react';
@@ -33,10 +35,28 @@ export default function App() {
 
   const [userStats, setUserStats] = useState<UserStats>(() => {
     const saved = localStorage.getItem('userStats');
-    return saved ? JSON.parse(saved) : defaultUserStats;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Migration to enforce onboarding if flag doesn't exist
+      if (parsed.hasCompletedOnboarding === undefined) {
+         return { ...defaultUserStats, ...parsed, hasCompletedOnboarding: parsed.name ? true : false };
+      }
+      return parsed;
+    }
+    return defaultUserStats;
   });
 
   const [helpContent, setHelpContent] = useState<string | null>(null);
+  const [toasts, setToasts] = useState<{ id: string; message: string; type: ToastType }[]>([]);
+
+  const showToast = (message: string, type: ToastType = 'success') => {
+    const id = crypto.randomUUID();
+    setToasts(prev => [...prev, { id, message, type }]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  };
 
   // Sync to localStorage
   useEffect(() => {
@@ -80,7 +100,7 @@ export default function App() {
       setCurrentView('problem');
     } catch (error) {
       console.error('Error generating problem:', error);
-      alert('Failed to generate problem. Please try again.');
+      showToast('Failed to generate problem. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -95,7 +115,7 @@ export default function App() {
       setCurrentView('help');
     } catch (error) {
       console.error('Error generating help:', error);
-      alert('Failed to explain solution.');
+      showToast('Failed to explain solution.', 'error');
     } finally {
       setLoading(false);
     }
@@ -139,6 +159,9 @@ export default function App() {
           lastSolvedDate: today,
         };
       });
+      showToast('Challenge Passed! Stats updated.', 'success');
+    } else {
+      showToast('Challenge Failed. Keep trying!', 'error');
     }
 
     const newHistoryItem: HistoryItem = {
@@ -149,7 +172,6 @@ export default function App() {
     };
     
     setHistory(prev => [newHistoryItem, ...prev]);
-    alert(`Challenge Submitted! Status: ${isMockPassed ? 'Passed' : 'Failed'}`);
     if (isMockPassed) {
       setCurrentView('history');
     }
@@ -164,32 +186,68 @@ export default function App() {
   const handleClearHistory = () => {
     if (window.confirm('Are you sure you want to clear all history?')) {
       setHistory([]);
+      showToast('History cleared', 'success');
     }
   };
   
   const handleResetStats = () => {
-    if (window.confirm('Are you sure you want to reset your stats?')) {
+    if (window.confirm('Reset your progress and streak?')) {
       setUserStats(prev => ({
         ...prev,
         completed: 0,
         streak: 0,
         lastSolvedDate: null
       }));
+      showToast('Stats reset', 'success');
     }
   };
 
   const handleResetAll = () => {
-    if (window.confirm('Are you sure you want to completely reset all data and settings?')) {
+    if (window.confirm('This will reset all your data. Continue?')) {
+      // Clear persistence
+      localStorage.removeItem('history');
+      localStorage.removeItem('userStats');
+      localStorage.removeItem('notes');
+      
+      // Reset React state
       setHistory([]);
-      localStorage.removeItem('notes'); // Clean up any leftover notes
       setSettings(defaultSettings);
       setUserStats(defaultUserStats);
       setProblemData(null);
       setCurrentView('generate');
+      showToast('All data reset', 'success');
+    }
+  };
+
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      // Reset Identity & History for a complete session reset
+      localStorage.removeItem('userStats');
+      localStorage.removeItem('history');
+      
+      setHistory([]);
+      setUserStats(defaultUserStats);
+      setProblemData(null);
+      setCurrentView('generate');
+      showToast('Logged out successfully', 'success');
     }
   };
 
   const hasActiveProblem = problemData !== null;
+
+  // Root Logic: If no user identity, force onboarding/auth flow
+  if (!userStats || !userStats.name) {
+    return (
+      <>
+        <OnboardingView 
+          onComplete={(name, dob) => 
+            setUserStats(prev => ({ ...prev, name, dateOfBirth: dob, hasCompletedOnboarding: true }))
+          } 
+        />
+        <ToastContainer toasts={toasts} removeToast={removeToast} />
+      </>
+    );
+  }
 
   return (
     <Layout currentView={currentView} onViewChange={setCurrentView} hasActiveProblem={hasActiveProblem} userStats={userStats} onSubmit={handleSubmit}>
@@ -218,10 +276,12 @@ export default function App() {
           onClearHistory={handleClearHistory}
           onResetStats={handleResetStats}
           onResetAll={handleResetAll}
+          onLogout={handleLogout}
         />
       ) : (
         <DifficultySelectionView onSelect={handleDifficultySelect} userStats={userStats} />
       )}
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </Layout>
   );
 }
