@@ -61,3 +61,19 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.article-content p {
+  margin-bottom: 1rem;
+}
+.article-content code {
+  background-color: var(--color-surface-container-highest);
+  color: var(--color-primary-fixed-dim);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+}
+.article-content strong {
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
