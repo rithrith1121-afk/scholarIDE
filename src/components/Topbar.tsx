@@ -1,13 +1,15 @@
-import { Settings } from 'lucide-react';
+import { Settings, Flame, CheckCircle2 } from 'lucide-react';
+import { UserStats } from '../types';
 
 interface TopbarProps {
   currentView: string;
   onViewChange: (view: string) => void;
   hasActiveProblem: boolean;
+  userStats: UserStats;
   onSubmit?: () => void;
 }
 
-export default function Topbar({ currentView, onViewChange, hasActiveProblem, onSubmit }: TopbarProps) {
+export default function Topbar({ currentView, onViewChange, hasActiveProblem, userStats, onSubmit }: TopbarProps) {
   return (
     <header className="flex justify-between items-center w-full px-6 md:px-10 h-16 bg-surface/70 backdrop-blur-xl sticky top-0 z-50 shadow-[0_1px_0_0_rgba(255,255,255,0.05),0_24px_48px_rgba(6,14,32,0.4)]">
       <div className="flex items-center gap-10 md:gap-16 h-full">
@@ -49,16 +51,6 @@ export default function Topbar({ currentView, onViewChange, hasActiveProblem, on
           >
             History
           </button>
-          <button
-            onClick={() => onViewChange('notes')}
-            className={`font-label h-full flex items-center px-2 transition-all duration-300 hover:bg-white/5 ${
-              currentView === 'notes'
-                ? 'text-primary border-b-2 border-primary-container'
-                : 'text-slate-400 hover:text-secondary'
-            }`}
-          >
-            Notes
-          </button>
           
           <button
             onClick={() => onViewChange('help')}
@@ -72,9 +64,28 @@ export default function Topbar({ currentView, onViewChange, hasActiveProblem, on
           </button>
         </nav>
       </div>
+
       <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2 mr-4 text-slate-400">
-          <button className="p-2 hover:text-secondary transition-all duration-300 hover:bg-white/5 rounded-md active:scale-95 flex items-center justify-center">
+        {/* User Stats Display */}
+        <div className="hidden lg:flex items-center gap-4 mr-2 bg-surface-container-high/50 rounded-full px-4 py-1.5 border border-outline-variant/20">
+          <div className="flex items-center gap-1.5 text-secondary" title="Completed Problems">
+            <CheckCircle2 size={16} />
+            <span className="font-mono text-sm font-bold">{userStats.completed}</span>
+          </div>
+          <div className="w-px h-4 bg-outline-variant/30" />
+          <div className="flex items-center gap-1 text-tertiary" title="Current Streak">
+            <Flame size={16} strokeWidth={2.5} className={userStats.streak > 0 ? "text-orange-500 fill-orange-500/20" : "text-outline"} />
+            <span className="font-mono text-sm font-bold">{userStats.streak}</span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 text-slate-400">
+          <button 
+            onClick={() => onViewChange('settings')}
+            className={`p-2 transition-all duration-300 hover:bg-white/5 rounded-md active:scale-95 flex items-center justify-center ${
+              currentView === 'settings' ? 'text-secondary bg-white/5' : 'hover:text-secondary'
+            }`}
+          >
             <Settings size={20} />
           </button>
         </div>

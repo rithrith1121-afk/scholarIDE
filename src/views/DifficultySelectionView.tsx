@@ -1,19 +1,28 @@
 import { Sparkles } from 'lucide-react';
+import { UserStats } from '../types';
 
 interface DifficultySelectionViewProps {
   onSelect: (difficulty: 'Easy' | 'Intermediate' | 'Hard') => void;
+  userStats: UserStats;
 }
 
-export default function DifficultySelectionView({ onSelect }: DifficultySelectionViewProps) {
+export default function DifficultySelectionView({ onSelect, userStats }: DifficultySelectionViewProps) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center h-full w-full bg-surface p-6">
       <div className="max-w-2xl w-full text-center space-y-8">
-        <div className="inline-flex items-center justify-center p-4 bg-primary/10 rounded-full mb-4">
+        <div className="inline-flex items-center justify-center p-4 bg-primary/10 rounded-full mb-2">
           <Sparkles className="w-12 h-12 text-primary" />
         </div>
-        <h1 className="text-4xl md:text-5xl font-headline font-bold text-on-surface">
-          Generate a Problem
-        </h1>
+        
+        <div className="animate-[fade-in-up_0.4s_ease-out_forwards]">
+          <h2 className="text-xl md:text-2xl tracking-tight font-semibold text-transparent bg-clip-text bg-gradient-to-br from-primary/80 to-primary-container/80 font-label mb-2">
+            Hi, {userStats.name || 'Guest'}
+          </h2>
+          <h1 className="text-4xl md:text-5xl font-headline font-bold text-on-surface">
+            Generate a Problem
+          </h1>
+        </div>
+
         <p className="text-on-surface-variant font-body text-lg max-w-xl mx-auto">
           Choose a difficulty level and AI will generate a unique coding challenge for you.
         </p>

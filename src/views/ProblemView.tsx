@@ -1,15 +1,20 @@
 import { ChevronDown, AlignLeft, RotateCcw, Info, ChevronUp, X } from 'lucide-react';
-import { Problem } from '../types';
-import { useState } from 'react';
+import { Problem, Settings } from '../types';
+import { useState, useEffect } from 'react';
 
 interface ProblemViewProps {
   problem: Problem;
-  onGenerateNotes: (problem: Problem) => void;
   onExplainSolution: (problem: Problem, code: string) => void;
+  settings: Settings;
 }
 
-export default function ProblemView({ problem, onGenerateNotes, onExplainSolution }: ProblemViewProps) {
-  const [lang, setLang] = useState<'python' | 'java' | 'cpp'>('python');
+export default function ProblemView({ problem, onExplainSolution, settings }: ProblemViewProps) {
+  const [lang, setLang] = useState<'python' | 'java' | 'cpp'>(settings.language);
+
+  // Keep internal lang sync if settings change while mounted
+  useEffect(() => {
+    setLang(settings.language);
+  }, [settings.language]);
 
   return (
     <div className="flex h-full w-full overflow-hidden">
@@ -91,12 +96,6 @@ export default function ProblemView({ problem, onGenerateNotes, onExplainSolutio
 
           <div className="flex gap-4 mt-12 mb-8 border-t border-outline-variant/20 pt-8">
             <button
-              onClick={() => onGenerateNotes(problem)}
-              className="flex-1 px-4 py-2 bg-surface-container border border-outline-variant/30 rounded-lg text-primary hover:bg-primary-container/20 transition-colors font-label shadow-sm active:scale-95"
-            >
-              Generate Notes
-            </button>
-            <button
               onClick={() => onExplainSolution(problem, problem.starterCode[lang])}
               className="flex-1 px-4 py-2 bg-surface-container border border-outline-variant/30 rounded-lg text-secondary hover:bg-secondary-container/20 transition-colors font-label shadow-sm active:scale-95"
             >
@@ -133,15 +132,15 @@ export default function ProblemView({ problem, onGenerateNotes, onExplainSolutio
         </div>
 
         {/* Code Editor Area */}
-        <div className="flex-1 overflow-hidden flex bg-[#0d1117]">
+        <div className="flex-1 overflow-hidden flex bg-[#0d1117]" style={{ fontSize: `${settings.fontSize}px` }}>
           {/* Simulated Line Numbers */}
-          <div className="w-12 text-outline font-label text-xs flex flex-col items-end pr-2 pt-4 select-none opacity-50 border-r border-outline-variant/15">
+          <div className="w-12 text-outline font-label flex flex-col items-end pr-2 pt-4 select-none opacity-50 border-r border-outline-variant/15 text-[0.85em]">
             {problem.starterCode[lang].split('\n').map((_, i) => (
               <span key={i}>{i + 1}</span>
             ))}
           </div>
           {/* Code */}
-          <div className="flex-1 pt-4 pl-4 font-mono text-sm overflow-auto text-[#c9d1d9] leading-relaxed">
+          <div className="flex-1 pt-4 pl-4 font-mono overflow-auto text-[#c9d1d9] leading-relaxed">
             <pre>
               <code>
                 {problem.starterCode[lang]}

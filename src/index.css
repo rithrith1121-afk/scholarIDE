@@ -48,10 +48,51 @@
   --font-mono: 'JetBrains Mono', monospace;
 }
 
+:root.light {
+  --color-surface: #f8fafc;
+  --color-surface-dim: #f1f5f9;
+  --color-surface-bright: #ffffff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f8fafc;
+  --color-surface-container: #f1f5f9;
+  --color-surface-container-high: #e2e8f0;
+  --color-surface-container-highest: #cbd5e1;
+
+  --color-primary: #375df1;
+  --color-primary-container: #dde1ff;
+  --color-on-primary-container: #001454;
+  --color-primary-fixed: #375df1;
+  --color-primary-fixed-dim: #0035be;
+
+  --color-secondary: #00a572;
+  --color-secondary-container: #6ffbbe;
+  --color-on-secondary-container: #002113;
+  
+  --color-on-surface: #0f172a;
+  --color-on-surface-variant: #475569;
+  --color-outline: #64748b;
+  --color-outline-variant: #94a3b8;
+}
+
 body {
   background-color: var(--color-surface);
   color: var(--color-on-surface);
   font-family: var(--font-body);
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-\\[fade-in-up_0\\.4s_ease-out_forwards\\] {
+  animation: fade-in-up 0.4s ease-out forwards;
 }
 
 .scrollbar-hide::-webkit-scrollbar {

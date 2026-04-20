@@ -84,23 +84,6 @@ export async function generateProblem(difficulty: 'Easy' | 'Intermediate' | 'Har
   return data;
 }
 
-export async function generateNotes(problem: Problem): Promise<string> {
-  const response = await ai.models.generateContent({
-    model: 'gemini-3.1-pro-preview',
-    contents: `Generate comprehensive yet concise learning notes for a student solving the coding problem below. Format using clean HTML (use tags like <h3>, <ul>, <li>, <p>, <strong>, <code>. Do not wrap in a markdown code block).
-    
-    Problem Title: ${problem.title}
-    Difficulty: ${problem.difficulty}
-    Tags: ${problem.tags.join(', ')}
-    
-    Description:
-    ${problem.descriptionHtml}
-    `,
-  });
-
-  return response.text?.trim()?.replace(/^```html\s*([\s\S]*)\s*```$/, '$1') || '<p>No notes generated.</p>';
-}
-
 export async function generateHelp(problem: Problem, userCode: string): Promise<string> {
   const response = await ai.models.generateContent({
     model: 'gemini-3.1-pro-preview',
