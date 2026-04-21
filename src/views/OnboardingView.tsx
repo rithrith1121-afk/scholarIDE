@@ -94,16 +94,12 @@ export default function OnboardingView({ onComplete }: OnboardingViewProps) {
             Hi, {name} 👋
           </h2>
 
-          <p className="text-on-surface-variant font-body text-lg italic mt-8">
-            "Ready to test your best?"
-          </p>
-
-          <div className="pt-6">
+          <div className="pt-10">
             <button
               onClick={handleStartChallenge}
-              className="inline-flex items-center justify-center gap-2 py-4 px-8 bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-lg font-label font-bold tracking-wide text-lg hover:brightness-110 active:scale-95 transition-all shadow-[0_8px_32px_rgba(55,93,241,0.2)]"
+              className="inline-flex items-center justify-center py-4 px-10 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-2xl font-headline font-bold text-xl hover:scale-[1.03] hover:brightness-125 hover:shadow-[0_0_30px_rgba(79,70,229,0.4)] active:scale-[0.98] transition-all duration-300 shadow-xl"
             >
-              Start Challenge
+              Ready to test your best?
             </button>
           </div>
         </div>
